@@ -1,0 +1,19 @@
+{
+  "name": "itc230",
+  "version": "1.0.0",
+  "description": "JavaScript technologies that power a modern full-stack development workflow, including server-side scripting, automated testing, single-page web applications with MVC structure, package management, and JSON data storage.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stoneliz/itc230.git"
+  },
+  "author": "Liz Stone",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stoneliz/itc230/issues"
+  },
+  "homepage": "https://github.com/stoneliz/itc230#readme"
+}
