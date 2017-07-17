@@ -1,63 +1,56 @@
+'use strict'
 var movie = require("./lib/movies.js");
-// console.log(movie.getAll());
-// console.log(movie.getOne('Amelie'));
-// console.log(movie.deleteOne());
+const express = require("express");
+const app = express();
 
-var http = require('http'),
- fs = require('fs') , qs = require("querystring");
-function serveStaticFile(res, path, contentType, responseCode) {
- if(!responseCode) responseCode = 200;
- fs.readFile(__dirname + path, function(err,data) {
- if(err) {
- res.writeHead(500, { 'Content-Type': 'text/plain' });
- res.end('500 - Internal Error');
- } else {
- res.writeHead(responseCode,
- { 'Content-Type': contentType });
- res.end(data);
- }
+var handlebars =  require("express-handlebars");
+app.engine(".html", handlebars({extname: '.html'}));
+app.set("view engine", ".html");
+
+app.set('port', process.env.PORT || 3000);
+app.use(express.static(__dirname + '/public')); // set location for static files
+app.use(require("body-parser").urlencoded({extended: true})); // parse form submissions
+
+// send static file as response
+app.get('/', function(req,res){
+ res.type('text/html');
+ //res.sendFile(__dirname + '/public/home.html');
+ res.render('home.html', {movies: movie.getAll});
+});
+
+// send static file as response
+app.get('/about', function(req,res){
+ res.type('text/html');
+ res.sendFile(__dirname + '/public/about.html');
+ res.render('about.html');
+});
+
+//handle GET
+app.get('/delete', function(req,res){
+ var result = movie.deleteOne(req.query.title); //delete movie object
+ res.render('delete', {title: req.query.title, result: result});
  });
-}
-http.createServer(function(req,res){
- var url = req.url.split("?");
- var params = qs.parse(url[1]);
- //console.log(params);
- // normalize url by removing querystring, optional
- // trailing slash, and making lowercase
- var path = req.url.replace(/\/?(?:\?.*)?$/, '').toLowerCase();
- 
- switch(path) {
- case '':
- serveStaticFile(res, '/public/home.html', 'text/html');
- break;
- 
- case '/about':
- serveStaticFile(res, '/public/about.html', 'text/html');
- break;
- 
- case '/img/dogcat.jpg':
- serveStaticFile(res, '/public/img/dogcat.jpg',
-'image/jpeg');
- break;
 
- case '/get':
- var found = movie.getOne(params.title); //get movie object
- res.writeHead(200, {'Content-Type': 'text/plain'} );
- var results = (found) ? JSON.stringify(found) : "That title was not found.";
- res.end('Results for ' + params.title + ":" + "\n" + results);
- break;
- 
- case '/delete':
- var result = movie.deleteOne(params.title);
- res.writeHead(200, {'Content-Type': 'text/plain'} );
- var message = (result.deleted) ? "removed." : "not found.";
- res.end(params.title + " was " + message + " There are " + result.total + " movies remaining." );
- break;
- 
- default:
- serveStaticFile(res, '/public/404.html', 'text/html',
- 404);
- break;
- }
-}).listen(process.env.PORT || 3000);
-console.log('Server started; press Ctrl-C to terminate....');
+app.get('/detail', function(req,res){
+  console.log(req.query); // display parsed querystring object
+  var found = movie.getOne(req.query.title);
+  res.render("details", {title: req.query.title, result: found, movies: movie.getAll()});
+});
+
+//handle POST
+app.post('/detail', function(req,res){
+  console.log(req.body); // display parsed form submission
+  var found = movie.getOne(req.body.title);
+  res.render("details", {title: req.body.title, result: found, movies: movie.getAll()});
+});
+
+// define 404 handler
+app.use(function(req,res) {
+ res.type('text/plain'); 
+ res.status(404);
+ res.send('404 - Not found');
+});
+
+app.listen(app.get('port'), function() {
+ console.log('Express started'); 
+});

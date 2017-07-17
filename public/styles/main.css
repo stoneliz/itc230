@@ -1,0 +1,89 @@
+*  {
+    padding:0;
+    margin:0;
+}
+
+body {
+    margin: 0 auto;
+    margin-top: 100px;
+    width: 500px;
+    min-height: 125px;
+    font-family: arial;
+    border: 12px solid #545659;
+    padding: 20px;
+}
+
+
+
+img {
+    max-width: 450px;
+    margin: 20px;
+}
+h1 {
+    color: #545659;
+    font-family: Arial;
+    padding: 20px;
+    text-align: center;
+}
+
+h2 {
+    font-family: Georgia;
+    font-size: 1.2em;
+    font-weight: regular;
+    padding: 0 20px 7px;
+    color: #537648;
+    text-align: center;
+}
+
+
+p {
+    padding: 20px 0 0 20px;
+    text-align: center;
+}
+
+#left {
+    float: left;
+}
+
+#right {
+    float: right;
+}
+
+a {
+    color: #4e2b1e;
+    text-decoration: none;
+    font-family: Georgia;
+}
+
+a:hover {
+    font-weight: bold;
+}
+
+input {
+    margin: 20px;
+}
+
+input[type=text] {
+    border: 1px solid #4e2b1e;
+    padding: 5px 10px;
+    color: #222c3b;
+    font-weight: bold;
+    
+}
+
+.submit {
+    text-align: center;
+}
+
+.buttons {
+    padding-left: 175px;
+}
+
+input#salestax, #total{
+  background-color: #ddd;
+  color: #666;
+  }
+
+input[type='text']:focus {
+  background-color: #fff;
+  }

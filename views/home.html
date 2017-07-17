@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/styles/main.css">
+</head>
+<body>
+    <h1>Liz's ITC 230 Test App</h1>
+    <h2>Movies Worth Watching</h2>
+    <img src="/img/dogcat.jpg" alt="dog and cat">
+    
+    {{#each movies}}
+    <p><a href="/detail?title={{ title }}">{{title}}</a></p>
+    {{/each}}
+    
+    <form method="POST" action="/detail">
+        <div class="submit">
+            <input type="text" name="title" placeholder="movie title" required maxlength="100">
+            <button>Search</button>
+        </div>
+</form>
+</body>
+</html>
