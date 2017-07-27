@@ -1,2 +1,5 @@
 # ignore npm packages
 node_modules
+
+#ignore credentials
+credentials.js

@@ -2,16 +2,21 @@
 <html>
     <head>
         <title>Meadowlark Travel</title>
+        {{{_sections.head}}}
         {{#if showTests}}
             <link rel="stylesheet" href="/vendor/mocha.css">
         {{/if}}
         <script src="//code.jquery.com/jquery-2.0.2.min.js"></script>
+        <link rel="stylesheet" href="{{static /css/main.css}}">
     </head>
     <body>
         <header>
-            <img src="/img/dogcat.jpg" alt="dog and cat">
+            <img src="{{static '/img/dogcat.jpg'}}" alt="dog and cat">
         </header>
         {{{body}}}
+        <script src="http://code.jquery.com/jquery-2.0.2.min.js">
+            {{{_sections.jquery}}}
+        </script>
         
         {{#if showTests}}
             <div id="mocha"></div>
