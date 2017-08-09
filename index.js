@@ -7,6 +7,7 @@ var Movie = require("./models/movie"); //database model
 app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public')); // set location for static files
 app.use(require("body-parser").urlencoded({extended: true})); // parse form submissions
+app.use('/api', require('cors')());
 
 var handlebars =  require("express-handlebars");
 app.engine(".html", handlebars({extname: '.html'}));
@@ -29,6 +30,7 @@ app.get('/', function(req,res,next){
  //res.sendFile(__dirname + '/public/home.html');
 //  res.render('home.html', {movies: movie.getAll});
  });
+
 
 // send static file as response
 app.get('/about', function(req,res){
@@ -64,6 +66,41 @@ app.get('/delete', function(req,res){
       res.render('delete', {title: req.query.title, deleted: result.result.n !==0, total: total});
     });
   });
+});
+
+//API routes
+app.get('/api/v1/movies', (req,res, next) => {
+ Movie.find((err,results) => {
+     if (err || !results)
+     return next(err);
+     res.json(results);
+ });
+});
+
+app.get('/api/v1/movie/:title', (req,res,next)=> {
+ let title = req.params.title;
+ Movie.findOne({title: title}, (err, result) => {
+     if (err || !result) 
+     return next(err);
+     res.json(result);
+ });
+});
+
+app.get('/api/v1/delete/:title', (req, res, next) => {
+    Movie.remove({"title":req.params.title}, (err, result) => {
+        if (err)
+        return next(err);
+        res.json({"deleted": result.result.n});
+    });
+});
+
+app.get('/api/v1/add/:title/:leadActor/:releaseDate', (req,res,next) => {
+    let title = req.params.title;
+    Movie.update({ title:title}, {title:title, leadActor:req.params.leadActor, releaseDate:req.params.releaseDate}, {upsert:true}, (err, result) =>{
+        if (err)
+        return next(err);
+        res.json({updated: result.nModified});
+    });
 });
 
 // define 404 handler
