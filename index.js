@@ -8,6 +8,7 @@ app.set('port', process.env.PORT || 3000);
 app.use(express.static(__dirname + '/public')); // set location for static files
 app.use(require("body-parser").urlencoded({extended: true})); // parse form submissions
 app.use('/api', require('cors')());
+app.use(require("body-parser").json());  
 
 var handlebars =  require("express-handlebars");
 app.engine(".html", handlebars({extname: '.html'}));
@@ -16,20 +17,16 @@ app.set("view engine", ".html");
 // send static file as response
 app.get('/', function(req,res,next){
  Movie.find({}, function (err, items) {
-  var context = {
-   items: items.map(function(movie){
-    return {
-     title: movie.title
-    }
-   })
-  };
-  res.render('home.html', context);
-    //console.log(items);
+  console.log(items)
+  if (err) return next(err);
+        res.render('home', {items: JSON.stringify(items)});    
+    });
 });
+
  //res.type('text/html');
  //res.sendFile(__dirname + '/public/home.html');
 //  res.render('home.html', {movies: movie.getAll});
- });
+
 
 
 // send static file as response
@@ -90,15 +87,17 @@ app.get('/api/v1/delete/:title', (req, res, next) => {
     Movie.remove({"title":req.params.title}, (err, result) => {
         if (err)
         return next(err);
-        res.json({"deleted": result.result.n});
+        res.json({"deleted": result.result.n}); //n=1 for deleted item, 0 for not deleted
     });
 });
 
 app.get('/api/v1/add/:title/:leadActor/:releaseDate', (req,res,next) => {
+    // find & update existing item, or add new
     let title = req.params.title;
     Movie.update({ title:title}, {title:title, leadActor:req.params.leadActor, releaseDate:req.params.releaseDate}, {upsert:true}, (err, result) =>{
         if (err)
         return next(err);
+        // nModified = 0 for new item, = 1+ for updated item 
         res.json({updated: result.nModified});
     });
 });
